@@ -1,0 +1,2 @@
+#!/bin/sh
+scrot -o -s $XDG_RUNTIME_DIR/scrot-selection.png -e 'xclip -selection clipboard -t image/png -i $f'

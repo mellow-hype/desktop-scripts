@@ -1,0 +1,21 @@
+#!/bin/sh
+# OUTDIR=$(xdg-user-dir PICTURES)
+OUTDIR="$HOME/media/images/screenshots"
+
+if [ ! -d $OUTDIR ]; then
+    mkdir -p $OUTDIR
+fi
+
+LABEL="$OUTDIR/$(date +'%s_screenshot.png')"
+grim -g "$(slurp)" $LABEL
+
+ACTION=$(dunstify -i $LABEL --action="clip,Clipboard" "Screenshot saved" "$LABEL")
+
+case "$ACTION" in
+    "clip")
+        cat $LABEL | wl-copy
+        ;;
+    "2")
+        exit 0
+        ;;
+esac

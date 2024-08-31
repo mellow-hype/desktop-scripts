@@ -1,0 +1,14 @@
+#!/bin/bash
+# Collect a list of Sway node names and feed them to fuzzel to allow user to pick a window to focus.
+
+# Grab the list of window titles using swaymsg and jq to filter the json response
+NODES_Q=".nodes[].nodes[].nodes[].nodes[].nodes[], .nodes[].nodes[].nodes[].nodes[], .nodes[].nodes[].nodes[]"
+NODES=$(swaymsg -t get_tree | jq "$NODES_Q | {name} | select(.name != null) | join(\"\")")
+
+# pass the list of node names to fuzzel for selection
+SELECTED=$(echo "$NODES" | fuzzel -d -b "#212121ff" -t "#ffcc66ff" -s "#ffcc66ff" -S "#212121ff" --font="Terminus:size=10" -w 64 -I)
+
+# Focus the selected window by title using swaymsg
+if [ ! -z "$SELECTED" ]; then
+    swaymsg -t command "[title=$SELECTED] focus"
+fi

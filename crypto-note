@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+export EDITOR=nvim
+
+if [ -z "$1" ]; then
+    echo "usage: $0 <outfile>"
+    exit 1
+fi
+OUTFILE=$1
+PLAINTEXT=$XDG_RUNTIME_DIR/encnote.plain
+
+
+# if the given outfile exists, assume its an encrypted note we're editing;
+# decrypt and save to the plaintext temp file
+if [ -e "$OUTFILE" ]; then
+    IS_CRYPTO=$(cat $OUTFILE | grep "BEGIN PGP")
+    if [ ! -z "$IS_CRYPTO" ]; then
+        gpg2 --decrypt --armor "$OUTFILE" > $PLAINTEXT
+    fi
+fi
+
+$EDITOR -c "set nobackup nowritebackup noswapfile" $PLAINTEXT
+cat $PLAINTEXT | $HOME/bin/encrypt > $OUTFILE
+cat $OUTFILE > $PLAINTEXT
+echo AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA > $PLAINTEXT
+rm -rf $PLAINTEXT

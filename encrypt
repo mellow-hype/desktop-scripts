@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -- "${1:-$(</dev/stdin)}" "${@:2}"
+
+IDENT=hyperdude
+
+if [ -f "$1" ]; then
+    cat "$1" | gpg2 --encrypt --armor -r "$IDENT"
+    exit 0
+fi
+
+echo "$1" | gpg2 --encrypt --armor -r hyperdude
