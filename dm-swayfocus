@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Collect a list of Sway node names and feed them to fuzzel to allow user to pick a window to focus.
 
 # Grab the list of window titles using swaymsg and jq to filter the json response

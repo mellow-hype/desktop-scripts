@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Trigger custom dunst notifications to show volume and screen brightness levels.
 # To be called immediately after making a change to either of these.
 ACTION=$1

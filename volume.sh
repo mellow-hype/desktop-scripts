@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Wrapper to set volume levels and then trigger a dunst notification with notify.sh
 ACTION=$1
 LIMIT="1.5"
