@@ -3,6 +3,10 @@
 # To be called immediately after making a change to either of these.
 ACTION=$1
 
+BACKLIGHT_MAX="100.00"
+CURR_BACKLIGHT=$(light)
+
+
 case $ACTION in
     "volume")
         LIMIT="1.5"
@@ -16,10 +20,9 @@ case $ACTION in
         ;;
 
     "brightness")
-        current=$(brightnessctl get)
-        max=$(brightnessctl max)
-        res=$(echo "scale=2;($current/$max)*100" | bc)
-        dunstify -a "$ACTION" -h string:x-dunst-stack-tag:bright "Brightness: " -h int:value:"$res"
+        dunstify -a "$ACTION" \
+            -h string:x-dunst-stack-tag:bright "Brightness: " \
+            -h int:value:"$CURR_BACKLIGHT"
         ;;
 
     *)
