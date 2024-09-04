@@ -7,10 +7,19 @@ if [ ! -d $OUTDIR ]; then
 fi
 
 LABEL="$OUTDIR/$(date +'%s_screenshot.png')"
-grim -g "$(slurp)" $LABEL
 
+# get screen slection
+COORD="$(slurp)"
+# detect if escaped early and exit
+if [ -z "$COORD" ]; then
+    exit 0;
+fi
+
+# grab the screenshot and notify dunst
+grim -g "${COORD}" $LABEL
 ACTION=$(dunstify -i $LABEL --action="clip,Clipboard" "Screenshot saved" "$LABEL")
 
+# determine whether we should copy to clipboard
 case "$ACTION" in
     "clip")
         cat $LABEL | wl-copy
