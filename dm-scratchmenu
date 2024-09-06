@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Grab the list of nodes in the scratchpad
+NODES=$(swaymsg -t get_tree | jq -r '.. | (.nodes? // empty)[] | select(.name == "__i3_scratch").floating_nodes[] | {name} + {id}')
+
+# Grab node names list
+NODE_NAMES=$(echo "$NODES" | jq .name)
+
+# Pass the list of node names to fuzzel for selection
+SELECTED=$(echo "$NODE_NAMES" | fuzzel -d -w 64 -I)
+
+# Focus the selected window by using swaymsg
+if [ ! -z "$SELECTED" ]; then
+    NODE_ID=$(echo "$NODES" | jq '. | select(.name == '"$SELECTED"') | .id')
+    swaymsg "[con_id=$NODE_ID] scratchpad show"
+fi
