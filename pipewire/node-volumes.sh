@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Show the volume levels for specific target sinks if they're active.
 
 TARGETS=("ncspot Firefox mpv")

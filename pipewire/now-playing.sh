@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Super simple "Now Playing" util to get the media.name prop of all Pipewire audio output streams
 
