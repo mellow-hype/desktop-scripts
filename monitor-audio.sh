@@ -9,8 +9,6 @@ if [ ! -z "${PREV_PID}" ]; then
     echo ${PREV_PID} | xargs kill -9
 fi
 
-sleep 6
-
 while true; do
     last=$(cat $TMP_LAST)
     # -r for jq removes outer quotes from parsed values
@@ -25,7 +23,11 @@ while true; do
 
     # send dunst notification on detecting a change
     if [ "${now}" != "${last}" ];then
-        dunstify -a ${app} "Now Playing ($app)" "${now}"
+        if [ "$app" == "Firefox" ]; then
+            dunstify --icon firefox -a 'now-playing' "Now Playing ($app)" "${now}"
+        else
+            dunstify -a 'now-playing' "Now Playing ($app)" "${now}"
+        fi
     fi
 
     # save now to /tmp/playing.last
