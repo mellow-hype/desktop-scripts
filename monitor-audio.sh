@@ -25,6 +25,8 @@ while true; do
     if [ "${now}" != "${last}" ];then
         if [ "$app" == "Firefox" ]; then
             dunstify --icon firefox -a 'now-playing' "Now Playing ($app)" "${now}"
+        elif [ "$app" == "mpv" ]; then
+            dunstify --icon mpv -a 'now-playing' "Now Playing ($app)" "${now}"
         else
             dunstify -a 'now-playing' "Now Playing ($app)" "${now}"
         fi
