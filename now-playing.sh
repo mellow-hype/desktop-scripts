@@ -2,4 +2,5 @@
 #
 # Super simple "Now Playing" util to get the media.name prop of all Pipewire audio output streams
 
-pw-dump | jq -r '.[].info.props | select(."media.class" == "Stream/Output/Audio" and ."pulse.corked" == false) | {"media.name"} | join("")'
+# pw-dump | jq -r '.[].info.props | select(."media.class" == "Stream/Output/Audio" and ."pulse.corked" == false) | {"media.name"} | join("")'
+pw-dump | jq -r '.[].info.props | select(."media.class" == "Stream/Output/Audio") | {"media.name"} | join("")'
