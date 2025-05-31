@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+TMP_OUT=/tmp/accs.json
+CATEGORY=Login
+TIMEOUT=15
+
+function get_account_info() {
+    echo "[+] fetching updated login items list"
+    op item list --categories "$CATEGORY" --format json | \
+        jq ".[] | {name: .title, id: .id, vault: .vault.id, user: .additional_information}" > $TMP_OUT
+    chmod go-r $TMP_OUT
+}
+
+
+# if the outfile doesn't exist, do a pull
+if [ ! -f $TMP_OUT ]; then
+    get_account_info
+fi
+
+# cache the data for 2hrs
+if test `find "$TMP_OUT" -mmin +120`; then
+    echo "[!] $TMP_OUT is older than 2h, refreshing"
+    get_account_info
+fi
+
+# get just the titles for use in menu and pass the list to fuzzel to get user selection
+SELECTION=$(cat $TMP_OUT | jq -r '.name' | fuzzel -d)
+[ -z "$SELECTION" ] && exit
+
+# get the id for the selected item to query 1password
+ITEM_ID=$(jq -r ". | select(.name == \"${SELECTION}\") | .id" $TMP_OUT)
+VAULT_ID=$(jq -r ". | select(.id == \"${ITEM_ID}\") | .vault" $TMP_OUT)
+USERNAME=$(jq -r ". | select(.id == \"${ITEM_ID}\") | .user" $TMP_OUT)
+
+# read password into clipboard
+REF_PASS="op://$VAULT_ID/$ITEM_ID/password"
+op read "${REF_PASS}" | wl-copy -n
+dunstify -a fzop "Credentials copied" "${SELECTION}"
+
+# # sleep for a little while and then clear the clipboard
+sleep $TIMEOUT && wl-copy --clear
