@@ -11,14 +11,20 @@ streams=$("$STREAM_CHECK" | jq 'select(."pulse.corked" == false or ."pulse.corke
 app=$(echo "$streams" | jq -r '."application.name"')
 now=$(echo "$streams" | jq -r '."media.name"')
 
-# filter out possible leading notification indicator and YouTube label from YT playing
-now_clean=$(echo "${now}" | sed 's/^([1-9]*) //' | sed 's/ \- YouTube$//')
-
 # sleep and continue if nothing's playing
 if [ "${now}" == "" ]; then
+    rm -f $TMP_LAST
     exit 0
 fi
 
+# filter out possible leading notification indicator and trailing application label
+now_clean=$(echo "${now}" | sed 's/^([1-9]*) //' | sed -r 's/ \- (YouTube|mpv)$//')
+
+# truncate the now playing string at 64 bytes
+now_clean=$(echo "${now_clean}" | sed 's/\(.\{64\}\).*/\1.../')
+
+# save now to /tmp/playing.last
+echo "$now_clean" | tee $TMP_LAST
 
 # send dunst notification on detecting a change
 if [ "${now_clean}" != "${last}" ];then
@@ -30,6 +36,3 @@ if [ "${now_clean}" != "${last}" ];then
         dunstify -c now-playing -a "$app" "${NP_SUMMARY}" "${now_clean}"
     fi
 fi
-
-# save now to /tmp/playing.last
-echo "$now_clean" | tee $TMP_LAST
