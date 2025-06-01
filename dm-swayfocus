@@ -3,16 +3,21 @@
 
 # Grab the list of nodes using swaymsg and jq to filter the json response
 NODES=$(swaymsg -t get_tree | jq -r \
-'.. | (.nodes? // empty)[] | select(.pid) | {id} + {name}')
+'.. | (.nodes? // empty)[] | select(.pid) | {id} + {name} + {space: "tile"}')
+
+# Grab the list of nodes in the scratchpad
+SCRATCH_NODES=$(swaymsg -t get_tree | jq -r \
+'.. | (.nodes? // empty)[] | select(.name == "__i3_scratch").floating_nodes[] | {name} + {id} + {space: "scrt"}')
+
+ALL_NODES="${NODES}${SCRATCH_NODES}"
 
 # Grab node names list
-NODE_NAMES=$(echo "$NODES" | jq .name)
-
+NODE_NAMES=$(echo "${ALL_NODES}" | jq -r '"[\(.space)]\t\(.name)"')
 # pass the list of node names to fuzzel for selection
-SELECTED=$(echo "$NODE_NAMES" | fuzzel -d -w 64 -I)
+SELECTED=$(echo "$NODE_NAMES" | fuzzel --accept-nth=2 -d -w 128 -I) || exit 0
 
 # Focus the selected window by using swaymsg
 if [ ! -z "$SELECTED" ]; then
-    NODE_ID=$(echo "$NODES" | jq '. | select(.name == '"$SELECTED"') | .id')
+    NODE_ID=$(echo "${ALL_NODES}"  | jq '. | select(.name == "'"${SELECTED}"'") | .id')
     swaymsg "[con_id=$NODE_ID] focus"
 fi

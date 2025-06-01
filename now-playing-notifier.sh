@@ -24,7 +24,7 @@ now_clean=$(echo "${now}" | sed 's/^([1-9]*) //' | sed -r 's/ \- (YouTube|mpv)$/
 now_clean=$(echo "${now_clean}" | sed 's/\(.\{64\}\).*/\1.../')
 
 # save now to /tmp/playing.last
-echo "$now_clean" | tee $TMP_LAST
+echo "${now_clean}" | tee $TMP_LAST
 
 # send dunst notification on detecting a change
 if [ "${now_clean}" != "${last}" ];then
