@@ -26,6 +26,11 @@ now_clean=$(echo "${now_clean}" | sed 's/\(.\{64\}\).*/\1.../')
 # save now to /tmp/playing.last
 echo "${now_clean}" | tee $TMP_LAST
 
+# don't send notifications for clementine (it'll send them on its own)
+if [ "$app" == "Clementine" ]; then
+    exit 0;
+fi
+
 # send dunst notification on detecting a change
 if [ "${now_clean}" != "${last}" ];then
     if [ "$app" == "Firefox" ]; then
