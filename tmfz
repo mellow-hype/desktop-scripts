@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-SESH=$(tmux ls | fzf | cut -d ":" -f 1)
-[ -z $SESH ] && exit 0
-echo $SESH
-tmux attach -t "$SESH"
