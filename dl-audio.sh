@@ -7,4 +7,4 @@ if [ -z "$URL" ]; then
     exit 1
 fi
 
-yt-dlp -x --audio-format flac --audio-quality 1 --yes-playlist "$URL"
+yt-dlp --restrict-filenames -x --audio-format flac --audio-quality 1 --yes-playlist "$URL"
