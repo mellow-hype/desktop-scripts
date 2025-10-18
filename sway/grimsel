@@ -6,7 +6,7 @@ if [ ! -d $OUTDIR ]; then
     mkdir -p $OUTDIR
 fi
 
-LABEL="$OUTDIR/$(date +'%s_screenshot.png')"
+LABEL="$OUTDIR/$(date +'screenshot_%Y-%M-%d.%H%m%S.png')"
 
 # get screen slection
 COORD="$(slurp)"
@@ -19,12 +19,6 @@ fi
 grim -g "${COORD}" $LABEL
 ACTION=$(dunstify -i $LABEL --action="clip,Clipboard" "Screenshot saved" "$LABEL")
 
-# determine whether we should copy to clipboard
-case "$ACTION" in
-    "clip")
-        cat $LABEL | wl-copy
-        ;;
-    "2")
-        exit 0
-        ;;
-esac
+# copy the image to the clipboard by default
+cat $LABEL | wl-copy
+
