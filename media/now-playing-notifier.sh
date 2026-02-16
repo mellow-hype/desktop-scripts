@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 NP_SUMMARY="Now Playing"
-STREAM_CHECK="$HOME/bin/hyprkit/pw-streams.sh"
+STREAM_CHECK="$HOME/bin/pw-streams.sh"
 TMP_LAST=/tmp/playing.last
 
 last=$(cat $TMP_LAST)
